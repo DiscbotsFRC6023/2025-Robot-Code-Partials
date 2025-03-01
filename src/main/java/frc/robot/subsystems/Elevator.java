@@ -12,7 +12,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,13 +38,13 @@ public class Elevator extends SubsystemBase {
     feedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV);
 
     elevatorMotorOne.configure(
-      Constants.Elevator.MOTOR_CONFIG.inverted(false), 
+      Constants.Elevator.MOTOR_CONFIG.inverted(true), 
       ResetMode.kResetSafeParameters, 
       PersistMode.kPersistParameters
     );
 
     elevatorMotorTwo.configure(
-      Constants.Elevator.MOTOR_CONFIG.follow(elevatorMotorOne), 
+      Constants.Elevator.MOTOR_CONFIG, 
       ResetMode.kResetSafeParameters, 
       PersistMode.kPersistParameters
     );
@@ -54,14 +53,15 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Elevator Homed:", this.getHomeSwitch());
+    SmartDashboard.putNumber("Elevator ENC:", this.getEncoderPosition());
     if(getHomeSwitch()){
       encoder.setPosition(0.0);
-      SmartDashboard.putBoolean("Elevator Home Switch:", this.getHomeSwitch());
     }
   }
 
   public boolean getHomeSwitch(){
-    return elevatorHomeSwitch.get();
+    return !elevatorHomeSwitch.get();
   }
 
   public double getEncoderPosition(){
@@ -74,6 +74,7 @@ public class Elevator extends SubsystemBase {
 
   public void manualLift(double speed){
     elevatorMotorOne.set(speed);
+    elevatorMotorTwo.set(-speed);
   }
 
   public void stopAll(){

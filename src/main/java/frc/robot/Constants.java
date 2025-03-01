@@ -31,11 +31,11 @@ public final class Constants {
         public static final double kV = 0.0;    // volts * seconds / distance
         public static final double kA = 0.0;    // volts * seconds^2 / distance
 
-        static{
+        /* static{
             MOTOR_CONFIG.smartCurrentLimit(MAX_CURRENT_DRAW);
             MOTOR_CONFIG.idleMode(ELEVATOR_MOTOR_IDLE_MODE);
             MOTOR_CONFIG.inverted(true);
-        }
+        } */
 
         public static final double L1 = 0.0;
         public static final double L2 = 0.0;
@@ -44,20 +44,25 @@ public final class Constants {
     }
 
     public static final class Wrist{
-        public static final int WRIST_CANID = 22;
+        public static final int WRIST_CANID = 30;
         public static final int WRIST_ENCODER_PORT = 5;
+        public static final double WRIST_RAW_OFFSET = 0.2410;
 
-        public static final double kP = 0.0;
+        public static final double CORAL_ANGLE = 15.0;
+        public static final double CORAL_ANGLE_L4 = 70.0;
+        public static final double WRIST_MOVEMENT_ANGLE = 16.0;
+
+        public static final double kP = 0.0035;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double errTolerance = 0.1;
+        public static final double errTolerance = 0.0;
 
         public static final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
 
         static{
             WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = 30;
             WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-            WRIST_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+            WRIST_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
             WRIST_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         }
 
@@ -68,11 +73,11 @@ public final class Constants {
     }
 
     public static final class Manipulator{
-        public static final int MAN_CANID = 42;
+        public static final int MAN_CANID = 31;
         public static final int CORAL_SENSOR_PORT = 0;
         public static final int ALGAE_SENSOR_PORT = 9;
         public static final double ALGAE_INTAKE_SPEED = 0.25;
-        public static final double CORAL_INTAKE_SPEED = 0.15;
+        public static final double CORAL_INTAKE_SPEED = 0.25;
         public static final double OUTTAKE_SPEED = 0.10;
     }
 }

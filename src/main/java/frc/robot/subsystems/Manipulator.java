@@ -33,31 +33,27 @@ public class Manipulator extends SubsystemBase {
   }
 
   public boolean getCoralSensor(){
-    return coralSensor.get();
+    return !coralSensor.get();
+  }
+
+  public double getIntakeRotations(){
+    return manipulatorMotor.getPosition().getValueAsDouble(); 
+  }
+
+  public void resetEncoder(){
+    manipulatorMotor.setPosition(0.0);
   }
 
   public void intakeAlgae(){
     if(!getAlgaeSensor()){
-      manipulatorMotor.set(-Constants.Manipulator.ALGAE_INTAKE_SPEED);
+      manipulatorMotor.set(Constants.Manipulator.ALGAE_INTAKE_SPEED);
     } else {
       manipulatorMotor.set(0.0);
     }
   }
 
   public void intakeCoral(){
-    if(!getAlgaeSensor()){
-      manipulatorMotor.set(Constants.Manipulator.CORAL_INTAKE_SPEED);
-    } else {
-      manipulatorMotor.set(0.0);
-    }
-  }
-
-  public void outtake(boolean reversed){
-    if(reversed){
-      manipulatorMotor.set(-Constants.Manipulator.OUTTAKE_SPEED);
-    } else {
-      manipulatorMotor.set(Constants.Manipulator.OUTTAKE_SPEED);
-    }
+    manipulatorMotor.set(-Constants.Manipulator.CORAL_INTAKE_SPEED);
   }
 
   public void stopAll(){
