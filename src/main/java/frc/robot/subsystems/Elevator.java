@@ -22,6 +22,7 @@ public class Elevator extends SubsystemBase {
 
   private final SparkMax elevatorMotorOne;
   private final SparkMax elevatorMotorTwo;
+  private final SparkMax testMax;
   private RelativeEncoder encoder;
   private DigitalInput elevatorHomeSwitch;
   private PIDController elevatorController;
@@ -32,12 +33,14 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     elevatorMotorOne = new SparkMax(Constants.Elevator.ELEVATOR_ONE_CANID, MotorType.kBrushless);
     elevatorMotorTwo = new SparkMax(Constants.Elevator.ELEVATOR_TWO_CANID, MotorType.kBrushless);
+    testMax = new SparkMax(35, MotorType.kBrushless);
+
     elevatorHomeSwitch = new DigitalInput(Constants.Elevator.ELEVATOR_HOMESWITCH_PORT);
     encoder = elevatorMotorOne.getEncoder();
     elevatorController = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI, Constants.Elevator.kD);
     feedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV);
 
-    elevatorMotorOne.configure(
+    /* elevatorMotorOne.configure(
       Constants.Elevator.MOTOR_CONFIG.inverted(true), 
       ResetMode.kResetSafeParameters, 
       PersistMode.kPersistParameters
@@ -47,7 +50,7 @@ public class Elevator extends SubsystemBase {
       Constants.Elevator.MOTOR_CONFIG, 
       ResetMode.kResetSafeParameters, 
       PersistMode.kPersistParameters
-    );
+    ); */
   }
 
   @Override
@@ -75,6 +78,9 @@ public class Elevator extends SubsystemBase {
   public void manualLift(double speed){
     elevatorMotorOne.set(speed);
     elevatorMotorTwo.set(-speed);
+    testMax.set(speed);
+    System.out.println("Speed: " + speed);
+    System.out.println("MSTATE: " + elevatorMotorOne.get());
   }
 
   public void stopAll(){
