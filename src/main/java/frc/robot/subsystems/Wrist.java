@@ -22,7 +22,7 @@ public class Wrist extends SubsystemBase {
     wristMotor = new TalonFX(Constants.Wrist.WRIST_CANID);
     wristController = new PIDController(Constants.Wrist.kP, Constants.Wrist.kI, Constants.Wrist.kD);
     wristController.setTolerance(Constants.Wrist.errTolerance);
-    wristEncoder = new DutyCycleEncoder(7);
+    wristEncoder = new DutyCycleEncoder(Constants.Wrist.WRIST_ENCODER_PORT);
     wristMotor.getConfigurator().apply(Constants.Wrist.WRIST_CONFIG);
   }
 

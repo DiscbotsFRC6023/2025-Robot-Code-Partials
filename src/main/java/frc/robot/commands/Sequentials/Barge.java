@@ -4,20 +4,21 @@
 
 package frc.robot.commands.Sequentials;
 
+import frc.robot.commands.Helpers.setElevatorPOS;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class L3Coral extends SequentialCommandGroup {
+public class Barge extends SequentialCommandGroup {
   /** Creates a new L1Coral. */
-  public L3Coral(Elevator s_elevator, Manipulator s_manipulator, Wrist s_wrist) {
+  public Barge(Elevator s_elevator, Manipulator s_manipulator, Wrist s_wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new RunCommand(() -> s_wrist.setWristPos(90), s_wrist).withTimeout(1.5));
-    addCommands(new RunCommand(() -> s_elevator.goToSetpoint(0.9), s_elevator).withTimeout(1.5));    
-    addCommands(new RunCommand(() -> s_wrist.setWristPos(16), s_wrist).withTimeout(1.5)); // CAREFULLLLLL
+    addCommands(
+      new RunCommand(() -> s_wrist.setWristPos(120), s_wrist).alongWith(new WaitCommand(0.05).andThen(new setElevatorPOS(s_elevator, 1.85))));
   }
 }

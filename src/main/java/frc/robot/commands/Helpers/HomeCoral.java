@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Manipulator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCoral extends Command {
+public class HomeCoral extends Command {
 
   Manipulator s_manipulator;
   boolean finished = false;
 
   /** Creates a new IntakeCoral. */
-  public IntakeCoral(Manipulator s_manipulator) {
+  public HomeCoral(Manipulator s_manipulator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.s_manipulator = s_manipulator;
     //addRequirements(s_manipulator);
@@ -23,14 +23,17 @@ public class IntakeCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_manipulator.intakeCoral();
+    s_manipulator.resetEncoder();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(s_manipulator.getCoralSensor()){
-      s_manipulator.stopAll(); 
+    if(s_manipulator.getIntakeRotations() < 2.0){
+      s_manipulator.intakeCoral();      
+    } else {
+      s_manipulator.stopAll();
+      finished = true;
     }
   }
 
@@ -43,7 +46,7 @@ public class IntakeCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return s_manipulator.getCoralSensor();
-    //return finished;
+    //return s_manipulator.getCoralSensor();
+    return finished;
   }
 }

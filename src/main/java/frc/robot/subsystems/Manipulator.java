@@ -20,6 +20,7 @@ public class Manipulator extends SubsystemBase {
     manipulatorMotor = new TalonFX(Constants.Manipulator.MAN_CANID);
     coralSensor = new DigitalInput(Constants.Manipulator.CORAL_SENSOR_PORT);
     algaeSensor = new DigitalInput(Constants.Manipulator.ALGAE_SENSOR_PORT);
+    manipulatorMotor.getConfigurator().apply(Constants.Manipulator.MANIPULATOR_CONFIG);
   }
 
   @Override
@@ -45,11 +46,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void intakeAlgae(){
-    if(!getAlgaeSensor()){
-      manipulatorMotor.set(Constants.Manipulator.ALGAE_INTAKE_SPEED);
-    } else {
-      manipulatorMotor.set(0.0);
-    }
+    manipulatorMotor.set(Constants.Manipulator.ALGAE_INTAKE_SPEED);
   }
 
   public void intakeCoral(){

@@ -28,9 +28,9 @@ public final class Constants {
         public static final double MAX_ELEVATOR_HEIGHT_METERS = 0;  //FIXME
         public static final double MIN_ELEVATOR_HEIGHT_METERS = 0;  //FIXME
 
-        public static final double kP = 1.2;
+        public static final double kP = 3.8;
         public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kD = 0.17;
 
         public static final double kS = 0.55;    // voltage that will slowly move the elevator
         public static final double kG = 0.3;    // voltage that will hold the elevator still
@@ -95,9 +95,9 @@ public final class Constants {
         public static final double CORAL_ANGLE_L4 = 70.0;
         public static final double WRIST_MOVEMENT_ANGLE = 16.0;
 
-        public static final double kP = 0.0035;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kP = 0.01;
+        public static final double kI = 0.00;
+        public static final double kD = 0.0001;
         public static final double errTolerance = 0.0;
 
         public static final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
@@ -119,8 +119,14 @@ public final class Constants {
         public static final int MAN_CANID = 31;
         public static final int CORAL_SENSOR_PORT = 0;
         public static final int ALGAE_SENSOR_PORT = 9;
-        public static final double ALGAE_INTAKE_SPEED = 0.25;
-        public static final double CORAL_INTAKE_SPEED = 0.25;
+        public static final double ALGAE_INTAKE_SPEED = 0.5;
+        public static final double CORAL_INTAKE_SPEED = 0.8;
         public static final double OUTTAKE_SPEED = 0.10;
+
+        public static final TalonFXConfiguration MANIPULATOR_CONFIG = new TalonFXConfiguration();
+
+        static{
+            MANIPULATOR_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        }
     }
 }

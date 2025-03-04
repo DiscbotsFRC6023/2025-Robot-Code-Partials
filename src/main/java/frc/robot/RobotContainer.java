@@ -19,7 +19,8 @@ public class RobotContainer {
   private Manipulator s_manipulator = new Manipulator();
   private Elevator s_elevator = new Elevator();
   private Wrist s_wrist = new Wrist();
-  private XboxController controller = new XboxController(0);
+  private XboxController driver = new XboxController(0);
+  private XboxController controller = new XboxController(1);
   private JoystickButton a = new JoystickButton(controller, XboxController.Button.kA.value);
   private JoystickButton x = new JoystickButton(controller, XboxController.Button.kX.value);
   private JoystickButton b = new JoystickButton(controller, XboxController.Button.kB.value);
@@ -36,25 +37,17 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    x.onTrue(new L2(s_elevator, s_manipulator, s_wrist));
+    y.onTrue(new L3(s_elevator, s_manipulator, s_wrist));
+    b.onTrue(new L4(s_elevator, s_manipulator, s_wrist));
+    a.onTrue(new RunCommand(() -> s_manipulator.intakeAlgae(), s_manipulator));
+    a.onFalse(new RunCommand(() -> s_manipulator.stopAll(), s_manipulator));
+    HELP.onTrue(new Barge(s_elevator, s_manipulator, s_wrist));
 
-    if(s_manipulator.getCoralSensor()){
-      // CORAL
-      a.onTrue(new L1Coral(s_elevator, s_manipulator, s_wrist));
-      x.onTrue(new L2Coral(s_elevator, s_manipulator, s_wrist));
-      y.onTrue(new L3Coral(s_elevator, s_manipulator, s_wrist));
-      b.onTrue(new L4Coral(s_elevator, s_manipulator, s_wrist));
-      intake.onTrue(new IntakeCoral(s_manipulator));
-    } else {
-      // ALGAE
-      a.onTrue(new L1Algae(s_elevator, s_manipulator, s_wrist));
-      x.onTrue(new L2Algae(s_elevator, s_manipulator, s_wrist));
-      intake.onTrue(new RunCommand(() -> s_manipulator.intakeAlgae(), s_manipulator));
-    }
-
+    intake.onTrue(new IntakeCoral(s_manipulator).andThen(new RunCommand(() -> s_manipulator.intakeCoral(0.1), s_manipulator).withTimeout(0.2).andThen(new InstantCommand(() -> s_manipulator.stopAll()))));
     rightClick.onTrue(new Home(s_elevator, s_manipulator, s_wrist));
     score.onTrue(new RunCommand(() -> s_manipulator.intakeCoral(), s_manipulator));
     score.onFalse(new InstantCommand(() -> s_manipulator.stopAll(), s_manipulator));
-    HELP.onTrue(new EXPL3Coral(s_elevator, s_manipulator, s_wrist));
   }
 
   public Command getAutonomousCommand() {
