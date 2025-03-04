@@ -22,42 +22,46 @@ public class Elevator extends SubsystemBase {
 
   private final SparkMax elevatorMotorOne;
   private final SparkMax elevatorMotorTwo;
-  private final SparkMax testMax;
   private RelativeEncoder encoder;
   private DigitalInput elevatorHomeSwitch;
   private PIDController elevatorController;
   private ElevatorFeedforward feedforward;
   private double pidOutput = 0.0;
+  private double motorOutput = 0.0;
+  public double ffOutput = 0.0;
 
 
   public Elevator() {
     elevatorMotorOne = new SparkMax(Constants.Elevator.ELEVATOR_ONE_CANID, MotorType.kBrushless);
     elevatorMotorTwo = new SparkMax(Constants.Elevator.ELEVATOR_TWO_CANID, MotorType.kBrushless);
-    testMax = new SparkMax(35, MotorType.kBrushless);
 
     elevatorHomeSwitch = new DigitalInput(Constants.Elevator.ELEVATOR_HOMESWITCH_PORT);
     encoder = elevatorMotorOne.getEncoder();
     elevatorController = new PIDController(Constants.Elevator.kP, Constants.Elevator.kI, Constants.Elevator.kD);
     feedforward = new ElevatorFeedforward(Constants.Elevator.kS, Constants.Elevator.kG, Constants.Elevator.kV);
 
-    /* elevatorMotorOne.configure(
-      Constants.Elevator.MOTOR_CONFIG.inverted(true), 
+    elevatorMotorOne.configure(
+      Constants.Elevator.LEFT_CONFIG,
       ResetMode.kResetSafeParameters, 
       PersistMode.kPersistParameters
     );
 
     elevatorMotorTwo.configure(
-      Constants.Elevator.MOTOR_CONFIG, 
+      Constants.Elevator.RIGHT_CONFIG, 
       ResetMode.kResetSafeParameters, 
       PersistMode.kPersistParameters
-    ); */
+    );
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Elevator Homed:", this.getHomeSwitch());
-    SmartDashboard.putNumber("Elevator ENC:", this.getEncoderPosition());
+    SmartDashboard.putNumber("Elevator ENC:", this.getLiftPosition());
+    /* SmartDashboard.putNumber("Elevator Voltage:", elevatorMotorOne.getAppliedOutput() * elevatorMotorOne.getBusVoltage());
+    SmartDashboard.putNumber("Elevator Velocity:", this.getVelocity());
+    SmartDashboard.putNumber("FF OUTPUT:", ffOutput); */
+
     if(getHomeSwitch()){
       encoder.setPosition(0.0);
     }
@@ -67,20 +71,16 @@ public class Elevator extends SubsystemBase {
     return !elevatorHomeSwitch.get();
   }
 
-  public double getEncoderPosition(){
-    return encoder.getPosition();
+  public double getLiftPosition(){
+    return -encoder.getPosition();
   }
 
-  public double getLiftPosition(){
-    return 0.0;  //FIXME: Change this to elevator height relative to encoder
+  public double getVelocity(){
+    return encoder.getVelocity();
   }
 
   public void manualLift(double speed){
     elevatorMotorOne.set(speed);
-    elevatorMotorTwo.set(-speed);
-    testMax.set(speed);
-    System.out.println("Speed: " + speed);
-    System.out.println("MSTATE: " + elevatorMotorOne.get());
   }
 
   public void stopAll(){
@@ -89,11 +89,20 @@ public class Elevator extends SubsystemBase {
   }
 
   public void goToSetpoint(double setpoint){  //FIXME
+    SmartDashboard.putNumber("CURR SETPOINT:", setpoint);
     pidOutput = elevatorController.calculate(getLiftPosition(), setpoint);
-    elevatorMotorOne.set(pidOutput);
+    ffOutput = feedforward.calculate(this.getVelocity());
+
+    // Basic Gravity Compensation:
+    motorOutput = pidOutput + ffOutput;
+
+    // Clamping:
+    motorOutput = Math.min(Math.max(motorOutput, -1.0), 1.0);
+
+    elevatorMotorOne.set(-pidOutput); // Negative so the elevator does not go the wrong way ¯\_(ツ)_/¯
   }
 
   public void homeElevator(){ //FIXME: Implement this later
-
+    this.goToSetpoint(0.01);
   }
 }

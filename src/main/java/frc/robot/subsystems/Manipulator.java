@@ -56,6 +56,10 @@ public class Manipulator extends SubsystemBase {
     manipulatorMotor.set(-Constants.Manipulator.CORAL_INTAKE_SPEED);
   }
 
+  public void intakeCoral(double speed){
+    manipulatorMotor.set(-speed);
+  }
+
   public void stopAll(){
     manipulatorMotor.stopMotor();
   }

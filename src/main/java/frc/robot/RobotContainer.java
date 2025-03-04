@@ -10,10 +10,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.IntakeCoral;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.Wrist;
+import frc.robot.commands.Helpers.IntakeCoral;
+import frc.robot.commands.Sequentials.*;
+import frc.robot.subsystems.*;
 
 public class RobotContainer {
 
@@ -21,11 +20,14 @@ public class RobotContainer {
   private Elevator s_elevator = new Elevator();
   private Wrist s_wrist = new Wrist();
   private XboxController controller = new XboxController(0);
-  JoystickButton a = new JoystickButton(controller, XboxController.Button.kA.value);
-  JoystickButton x = new JoystickButton(controller, XboxController.Button.kX.value);
-  JoystickButton IntakeCoral = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
-  JoystickButton ScoreCoral = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
-  JoystickButton HELP = new JoystickButton(controller, XboxController.Button.kY.value);
+  private JoystickButton a = new JoystickButton(controller, XboxController.Button.kA.value);
+  private JoystickButton x = new JoystickButton(controller, XboxController.Button.kX.value);
+  private JoystickButton b = new JoystickButton(controller, XboxController.Button.kB.value);
+  private JoystickButton y = new JoystickButton(controller, XboxController.Button.kY.value);
+  private JoystickButton rightClick = new JoystickButton(controller, XboxController.Button.kRightStick.value);
+  private JoystickButton intake = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
+  private JoystickButton score = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+  private JoystickButton HELP = new JoystickButton(controller, XboxController.Button.kLeftStick.value);
 
   public RobotContainer() {
     configureBindings();
@@ -34,17 +36,28 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    a.onTrue(new RunCommand(() -> s_wrist.setWristPos(16.0), s_wrist));
-    a.onFalse(new RunCommand(() -> s_wrist.setWristPos(0.1), s_wrist));
-    x.onTrue(new RunCommand(() -> s_wrist.setWristPos(90.0), s_wrist));
-    x.onFalse(new RunCommand(() -> s_wrist.setWristPos(0.1), s_wrist));
 
-    IntakeCoral.onTrue(new IntakeCoral(s_manipulator));
-    ScoreCoral.onTrue(new RunCommand(() -> s_manipulator.intakeCoral(), s_manipulator));
-    ScoreCoral.onFalse(new InstantCommand(() -> s_manipulator.stopAll(), s_manipulator));
+    if(s_manipulator.getCoralSensor()){
+      // CORAL
+      a.onTrue(new L1Coral(s_elevator, s_manipulator, s_wrist));
+      x.onTrue(new L2Coral(s_elevator, s_manipulator, s_wrist));
+      y.onTrue(new L3Coral(s_elevator, s_manipulator, s_wrist));
+      b.onTrue(new L4Coral(s_elevator, s_manipulator, s_wrist));
+      intake.onTrue(new IntakeCoral(s_manipulator));
+    } else {
+      // ALGAE
+      a.onTrue(new L1Algae(s_elevator, s_manipulator, s_wrist));
+      x.onTrue(new L2Algae(s_elevator, s_manipulator, s_wrist));
+      intake.onTrue(new RunCommand(() -> s_manipulator.intakeAlgae(), s_manipulator));
+    }
+
+    rightClick.onTrue(new Home(s_elevator, s_manipulator, s_wrist));
+    score.onTrue(new RunCommand(() -> s_manipulator.intakeCoral(), s_manipulator));
+    score.onFalse(new InstantCommand(() -> s_manipulator.stopAll(), s_manipulator));
+    HELP.onTrue(new EXPL3Coral(s_elevator, s_manipulator, s_wrist));
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return Commands.print("No autonomous GOOFY");
   }
 }
