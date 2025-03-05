@@ -30,7 +30,7 @@ public final class Constants {
 
         public static final double kP = 3.8;
         public static final double kI = 0.0;
-        public static final double kD = 0.17;
+        public static final double kD = 0.15;
 
         public static final double kS = 0.55;    // voltage that will slowly move the elevator
         public static final double kG = 0.3;    // voltage that will hold the elevator still
@@ -120,7 +120,7 @@ public final class Constants {
         public static final int CORAL_SENSOR_PORT = 0;
         public static final int ALGAE_SENSOR_PORT = 9;
         public static final double ALGAE_INTAKE_SPEED = 0.5;
-        public static final double CORAL_INTAKE_SPEED = 0.8;
+        public static final double CORAL_INTAKE_SPEED = 0.2;
         public static final double OUTTAKE_SPEED = 0.10;
 
         public static final TalonFXConfiguration MANIPULATOR_CONFIG = new TalonFXConfiguration();

@@ -18,6 +18,6 @@ public class L1Algae extends SequentialCommandGroup {
   public L1Algae(Elevator s_elevator, Manipulator s_manipulator, Wrist s_wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new RunCommand(() -> s_wrist.setWristPos(160), s_wrist).alongWith(new WaitCommand(0.05).andThen(new setElevatorPOS(s_elevator, 0.57))));
+    addCommands(new RunCommand(() -> s_wrist.setWristPos(160), s_wrist).alongWith(new WaitCommand(0.05).andThen(new setElevatorPOS(s_elevator, 0.57)).alongWith(new RunCommand(() -> s_manipulator.holdBall(), s_manipulator))));
   }
 }

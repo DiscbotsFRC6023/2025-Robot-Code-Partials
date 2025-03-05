@@ -49,6 +49,10 @@ public class Manipulator extends SubsystemBase {
     manipulatorMotor.set(Constants.Manipulator.ALGAE_INTAKE_SPEED);
   }
 
+  public void intakeAlgae(double speed){
+    manipulatorMotor.set(speed);
+  }
+
   public void intakeCoral(){
     manipulatorMotor.set(-Constants.Manipulator.CORAL_INTAKE_SPEED);
   }
@@ -59,5 +63,9 @@ public class Manipulator extends SubsystemBase {
 
   public void stopAll(){
     manipulatorMotor.stopMotor();
+  }
+
+  public void holdBall(){
+    this.intakeAlgae(0.1);
   }
 }
